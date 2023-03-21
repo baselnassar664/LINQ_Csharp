@@ -1,4 +1,4 @@
-﻿using LINQ_Demo;
+using LINQ_Demo;
 using System.ComponentModel;
 using System.Runtime.Intrinsics.X86;
 using System.Xml.Linq;
@@ -324,6 +324,54 @@ namespace LINQ
                 Console.WriteLine(number);
             }
             #endregion
+
+
+            Console.WriteLine("====First/last/Default/ElementAt/single=====");
+            #region Element Operators - Immediate Execution
+            //// Valid Only with Fluent Syntax not in query syntax
+           
+            var l=ProductList.First();
+            Console.WriteLine($"first={l}");
+            l = ProductList.Last();
+            Console.WriteLine($"last={l}");
+
+            List<Product> products = new List<Product>();
+            /* var a = products.First();*///error not found first proudct(null)
+            var a = products.FirstOrDefault();//defult =null
+            a = products.LastOrDefault();//defult =null
+            Console.WriteLine(a);
+
+            a = ProductList.First(p =>p.UnitsInStock==0);
+            a = ProductList.Last(p =>p.UnitsInStock==0);
+            a = ProductList.FirstOrDefault(p => p.UnitsInStock == 200);//not found UnitsInStock == 200 use  FirstOrDefault more safety
+            Console.WriteLine(a);
+
+            var z = ProductList.ElementAt(20);//elemnt index 20
+             z = ProductList.ElementAtOrDefault(20);//elemnt index 20
+            Console.WriteLine(z);
+
+         /*  var xx = products.Single();*/ //error //beacause products not contain one elemnt
+            //single>>يعني هل يحتوي ع عنصر واحد 
+            // Throw Exception becuse  List<Product> is empty
+            //// If Sequence Conatins Just Only One Element, Will Return it
+            //// Else Will Throw Exception (Sequence is Empty or Containts More than One Element
+            ///
+            var xx = ProductList.Single(p=>p.ProductID==10);//يعني هل يوجد فقط واحد 
+                                                            //proudct id=10
+                                                            // ولو وجدو رجعو
+
+             xx = ProductList.SingleOrDefault(p => p.ProductID == 200);//هان لو مالقاش الايدي 200 حيرجع
+                                                                       //defult value =null
+            Console.WriteLine(xx);
+
+
+            //// Hyprid Syntax: (Query Expression).FluentSyntax
+            var R = (from P in ProductList
+                     where P.UnitPrice > 300
+                     select new { P.ProductName, P.Category }).FirstOrDefault();
+            Console.WriteLine(xx);
+            #endregion
+
 
             Console.WriteLine("====max/min/sum/avg/Aggregate =====");
             #region Aggregate Operators - Immediate Execution

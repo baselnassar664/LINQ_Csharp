@@ -111,7 +111,7 @@ namespace LINQ
             #region Filtration (Restrictions) Operator - Where
 
 
-            Console.WriteLine("============");
+            Console.WriteLine("======(Restrictions) Operator - Where======");
 
             var res = ProductList.Where(x => x.UnitsInStock == 0); // Fluent Syntax
             foreach (var number in res)
@@ -242,6 +242,46 @@ namespace LINQ
             {
                 Console.WriteLine(number);
             }
+
+            //سؤال حلو
+            // Returns all pairs of numbers from both arrays such that the number from numbersA is less than the number from numbersB.
+            int[] numbersA = { 0, 2, 4, 5, 6, 8, 9 };
+            int[] numbersB = { 1, 3, 5, 7, 8 };
+
+            var res = from a in numbersA
+                      from b in numbersB
+                      where a < b
+                      select new { a, b };
+
+            foreach (var x in res)
+            {
+                Console.WriteLine($"{x.a} is less than  {x.b}");
+                /*
+                0 is less than  1
+                0 is less than  3
+                0 is less than  5
+                0 is less than  7
+                0 is less than  8
+                2 is less than  5
+                2 is less than  7
+                2 is less than  8
+                4 is less than  5
+                4 is less than  7
+                4 is less than  8
+                5 is less than  7
+                5 is less than  8
+                6 is less than  7
+                6 is less than  8
+                */
+
+            }
+            //Produce a sequence of the uppercase and lowercase versions of each word in the original array(Anonymous Types).
+            string[] words = { "aPPLE", "BlUeBeRrY", "cHeRry" };
+            var ress = words.Select(x => new { Original = x, Upper = x.ToUpper(), Lower = x.ToLower() });
+            foreach (var number in ress)
+            {
+                Console.WriteLine(number);
+            }
             #endregion
 
             Console.WriteLine("====index select=====");
@@ -252,10 +292,33 @@ namespace LINQ
             {
                 Console.WriteLine(number);
             }
+
+
+            //سؤال حلو
+            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+
+            Console.WriteLine("Number: In-place?");
+            foreach (var (number, index) in Arr.Select((number, index) => (number, index)))
+            {
+                bool isMatch = number == index;
+                Console.WriteLine($"{number}: {isMatch}");/*
+                                                           * 5: False
+                                                           * 4: False
+                                                           * 1: False
+                                                           * 3: True
+                                                           * 9: False
+                                                           * 8: False
+                                                           * 6: True
+                                                           * 7: True
+                                                           * 2: False
+                                                           * 0: False
+                                                           */
+
+            }
             #endregion
 
 
-            Console.WriteLine("====Ordering Operators=====");
+            Console.WriteLine("====Ordering Operators  OrderBy=====");
             #region Ordering Operators
             // Ascending Order 
             //من الصغير للكبير
@@ -326,7 +389,7 @@ namespace LINQ
             #endregion
 
 
-            Console.WriteLine("====First/last/Default/ElementAt/single=====");
+            Console.WriteLine("====First/last/Default/ElementAt/single/skip=====");
             #region Element Operators - Immediate Execution
             //// Valid Only with Fluent Syntax not in query syntax
            
@@ -350,11 +413,20 @@ namespace LINQ
              z = ProductList.ElementAtOrDefault(20);//elemnt index 20
             Console.WriteLine(z);
 
-         /*  var xx = products.Single();*/ //error //beacause products not contain one elemnt
-            //single>>يعني هل يحتوي ع عنصر واحد 
-            // Throw Exception becuse  List<Product> is empty
-            //// If Sequence Conatins Just Only One Element, Will Return it
-            //// Else Will Throw Exception (Sequence is Empty or Containts More than One Element
+
+            //3 Retrieve the second number greater than 5 
+            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            //8 second number greater than 5 
+            //use skip
+            var res = Arr.Where(x => x > 5).Skip(1).FirstOrDefault();
+            Console.WriteLine(res);
+
+
+            /*  var xx = products.Single();*/ //error //beacause products not contain one elemnt
+                                              //single>>يعني هل يحتوي ع عنصر واحد 
+                                              // Throw Exception becuse  List<Product> is empty
+                                              //// If Sequence Conatins Just Only One Element, Will Return it
+                                              //// Else Will Throw Exception (Sequence is Empty or Containts More than One Element
             ///
             var xx = ProductList.Single(p=>p.ProductID==10);//يعني هل يوجد فقط واحد 
                                                             //proudct id=10
@@ -409,6 +481,15 @@ namespace LINQ
             {
                 Console.WriteLine(number);
             }
+
+            // Create a list of all digits in the array whose second letter is 'i' that is reversed from the order in the original array.
+            string[] Arr = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+            List<string> list = Arr.Where(x => x[1] == 'i').Select(x => new string(x.Reverse().ToArray())).ToList();
+            foreach (var number in list)
+            {
+                Console.WriteLine(number);
+            }
+
             Product[] PrdArr = ProductList.Where(P => P.UnitsInStock == 0).ToArray();
 
 

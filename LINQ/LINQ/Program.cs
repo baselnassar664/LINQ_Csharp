@@ -78,6 +78,7 @@ namespace LINQ
             }
             #endregion
 
+            Console.WriteLine("======LINQ Execution======");
             #region LINQ Execution
 
             //taype Of LINQ Execution:
@@ -158,13 +159,25 @@ namespace LINQ
             res = ProductList.Where((P, index) => P.UnitsInStock == 0 && index < 10);/*بتعامل م ال
                                                                                       * id 
                                                                                       * على اساس index
-                                                                                      * */
-                                                                                          
+                                                                                      * */                                                                           
             foreach (var number in res)                                            
             {
                 Console.WriteLine(number);
             }
 
+            //سؤال حلو
+            //Returns digits whose name is shorter than their value.
+            string[] Arr = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+            //five = 4 char <5
+            //six = 3 char <6
+            //seven = 5 char <7
+            //eight = 8 char <8
+            //nine = 9 char <9
+            //var resss = Arr.Where((valueArr, index) => valueArr.Length < index);
+            //foreach (var number in resss)
+            //{
+            //    Console.WriteLine(number);
+            //}
             #endregion
 
             Console.WriteLine("======select/select many======");
@@ -248,14 +261,14 @@ namespace LINQ
             int[] numbersA = { 0, 2, 4, 5, 6, 8, 9 };
             int[] numbersB = { 1, 3, 5, 7, 8 };
 
-            var res = from a in numbersA
+            var resa = from aa in numbersA
                       from b in numbersB
-                      where a < b
-                      select new { a, b };
+                      where aa < b
+                      select new { aa, b };
 
-            foreach (var x in res)
+            foreach (var x in resa)
             {
-                Console.WriteLine($"{x.a} is less than  {x.b}");
+                Console.WriteLine($"{x.aa} is less than  {x.b}");
                 /*
                 0 is less than  1
                 0 is less than  3
@@ -277,8 +290,8 @@ namespace LINQ
             }
             //Produce a sequence of the uppercase and lowercase versions of each word in the original array(Anonymous Types).
             string[] words = { "aPPLE", "BlUeBeRrY", "cHeRry" };
-            var ress = words.Select(x => new { Original = x, Upper = x.ToUpper(), Lower = x.ToLower() });
-            foreach (var number in ress)
+            var resb = words.Select(x => new { Original = x, Upper = x.ToUpper(), Lower = x.ToLower() });
+            foreach (var number in resb)
             {
                 Console.WriteLine(number);
             }
@@ -295,10 +308,10 @@ namespace LINQ
 
 
             //سؤال حلو
-            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            int[] Arrz = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
 
             Console.WriteLine("Number: In-place?");
-            foreach (var (number, index) in Arr.Select((number, index) => (number, index)))
+            foreach (var (number, index) in Arrz.Select((number, index) => (number, index)))
             {
                 bool isMatch = number == index;
                 Console.WriteLine($"{number}: {isMatch}");/*
@@ -415,11 +428,11 @@ namespace LINQ
 
 
             //3 Retrieve the second number greater than 5 
-            int[] Arr = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+            int[] Ar = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
             //8 second number greater than 5 
             //use skip
-            var res = Arr.Where(x => x > 5).Skip(1).FirstOrDefault();
-            Console.WriteLine(res);
+            var q = Ar.Where(x => x > 5).Skip(1).FirstOrDefault();
+            Console.WriteLine(q);
 
 
             /*  var xx = products.Single();*/ //error //beacause products not contain one elemnt
@@ -483,8 +496,8 @@ namespace LINQ
             }
 
             // Create a list of all digits in the array whose second letter is 'i' that is reversed from the order in the original array.
-            string[] Arr = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
-            List<string> list = Arr.Where(x => x[1] == 'i').Select(x => new string(x.Reverse().ToArray())).ToList();
+            string[] Arrr = { "zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine" };
+            List<string> list = Arrr.Where(x => x[1] == 'i').Select(x => new string(x.Reverse().ToArray())).ToList();
             foreach (var number in list)
             {
                 Console.WriteLine(number);

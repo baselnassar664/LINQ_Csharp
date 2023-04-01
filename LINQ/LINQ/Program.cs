@@ -1,5 +1,7 @@
+using LINQ.Data;
 using LINQ_Demo;
 using System.ComponentModel;
+using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
 using System.Xml.Linq;
 using static LINQ_Demo.ListGenerators;
@@ -13,7 +15,6 @@ namespace LINQ
             //int x = 51;
             //Console.WriteLine(x.Reverse());//51
             #endregion
-
             #region Anonymous Type
             //anonyms type >>  مش تابع لكلاس معين او اوبجكت من نوع معين
 
@@ -65,7 +66,7 @@ namespace LINQ
 
             // 2. Query Syntax [Query Expression]: Like SQL Query Style
             // Start With from, Introducing Range Variable(N): Represents Each Element At Sequence
-            // End With select Or group by >>From >>where/order by >> select or group by
+            // End With select Or group by >>From >>where/order by >>then by>> select or group by
 
             Console.WriteLine("============");
             result = from x in Numbers
@@ -107,6 +108,63 @@ namespace LINQ
             {
                 Console.WriteLine(number);//6 7 8 //because casting operator
             }
+            #endregion
+
+            Console.WriteLine("======Enumerable=====");
+            #region Enumerable  Generator Operators
+            // The only way to call them is as static methods from Enumrable Class
+            //var resultt = Enumerable.Range(10, 100);
+            var resultt = Enumerable.Repeat(10, 5);
+            //var resultt = Enumerable.Empty<Product>(); // new List<Product>()
+            foreach (var item in resultt)
+                Console.Write($"{item} ");
+            #endregion
+            Console.WriteLine("\n======Any=====");
+            #region  any
+            int[] n = new int[] { 1, 2, 3, 4, 5, 6, 7 };
+            var any=n.Any(n => n > 5);
+            Console.WriteLine(any);//true 6 and 7 >5
+
+            var an = Dataa.pets.Any(n => n.Name == "Bruce");//false
+            Console.WriteLine(an);
+
+            var ann = Dataa.pets.Any(p => p.PetType == PetType.Fish);//true
+
+            Console.WriteLine(ann);
+
+            var annn = Dataa.pets.Any(p => p.Name.Length > 6 && p.Id % 2 == 0);//true   new Pet(2, "Anthony", PetType.Cat, 2f),
+
+
+
+            Console.WriteLine(annn);
+            #endregion
+
+            Console.WriteLine("===========contain=========");
+            #region containS
+
+            int[] nu = new[] { 10, 1, 4, 17, 122 };
+            var contains10 = numbers.Contains(10);
+            Console.WriteLine($"contains10: {contains10}");
+
+            var containsAnthony = Dataa.pets.Contains(new Pet(2, "Anthony", PetType.Cat, 2f));
+            Console.WriteLine($"containsAnthony: {containsAnthony}");
+
+           
+
+            #endregion contain
+
+            Console.WriteLine("======all=========");
+            #region ALL
+            var areAllNumbersLargerThanZero = numbers.All(n => n > 0);
+            Console.WriteLine($"areAllNumbersLargerThanZero: {areAllNumbersLargerThanZero}");//true
+
+            //سؤال حلو
+            var doAllPetsHaveNonEmptyName = Dataa.pets.All(p => !string.IsNullOrEmpty(p.Name));
+            Console.WriteLine($"doAllPetsHaveNonEmptyName: {doAllPetsHaveNonEmptyName}");
+
+            var areAllPetsCats = Dataa.pets.All(pet => pet.PetType == PetType.Cat);
+            Console.WriteLine($"areAllPetsCats: {areAllPetsCats}");
+
             #endregion
 
             #region Filtration (Restrictions) Operator - Where
@@ -458,13 +516,24 @@ namespace LINQ
             #endregion
 
 
-            Console.WriteLine("====max/min/sum/avg/Aggregate =====");
+            Console.WriteLine("====count/max/min/sum/avg/Aggregate =====");
             #region Aggregate Operators - Immediate Execution
 
             var d = ProductList.Count();
 
             d= ProductList.Count(p=>p.UnitsInStock==0);
             Console.WriteLine($"count=${d }");
+
+            var countOfDogs = Dataa.pets.Count(pet => pet.PetType == PetType.Dog);
+            Console.WriteLine($"countOfDogs: {countOfDogs}");//3
+
+            var countOfPetsNamedBruce = Dataa.pets.Count(pet => pet.Name == "Bruce");
+            Console.WriteLine($"countOfPetsNamedBruce: {countOfPetsNamedBruce}");
+
+            var countOfAllSmallDogs = Dataa.pets.Count(pet =>
+          pet.PetType == PetType.Dog &&
+          pet.Weight < 10);
+            Console.WriteLine($"countOfAllSmallDogs: {countOfAllSmallDogs}");
             var m = ProductList.Max(p => p.UnitPrice);
             Console.WriteLine($"max=${m}");
             m = ProductList.Min(p => p.UnitPrice);
@@ -514,6 +583,49 @@ namespace LINQ
                                                             .ToDictionary(P => P.ProductID, P => P.ProductName);//key=P.ProductID  value=P.ProductName
 
             HashSet<Product> PrdSet = ProductList.Where(P => P.UnitsInStock == 0).ToHashSet();
+            #endregion
+
+            Console.WriteLine("union/concat/Intersect/Distinct/Except");
+            #region Set Operators union/concat/Intersect/Distinct/Except
+
+            List<int> ints = new List<int>() { 1, 2, 3, 4 };
+            List<int> intss = new List<int>() { 1, 2, 3, 4, 5, 6 };
+
+                         
+        
+            var zz = ints.Union(intss);     // union Remove Duplicates
+                                            //// Remove Duplicates
+                                            //بدمج مع عدم التكرار 
+                                            //value
+            foreach (var product in zz)
+                Console.WriteLine(product);
+            Console.WriteLine("======");
+           
+            zz= ints.Concat(intss);/*concat=union all in data base
+                                    * دمج كل القيم مع تكرار القيم 
+                                    *value 
+                                    */
+            foreach (var product in zz)
+                Console.WriteLine(product);
+
+            Console.WriteLine("======");
+            zz = zz.Distinct();//Distinct // //// Remove Duplicates
+            foreach (var product in zz)
+                Console.WriteLine(product);
+            Console.WriteLine("======");
+            
+            zz = ints.Intersect(intss);// بتجيب القيم المتكررةIntersect 
+            foreach (var product in zz)
+                Console.WriteLine(product);
+
+            Console.WriteLine("======");
+            zz = ints.Except(intss);//excpect
+                                      //بتجيب حجات الي موجودة 
+                                      //in ints
+                                      //ومش موجودة في
+                                      //intss
+            foreach (var product in zz)
+                Console.WriteLine(product);
             #endregion
             #endregion
         }

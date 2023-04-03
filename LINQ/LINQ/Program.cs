@@ -3,6 +3,7 @@ using LINQ_Demo;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Runtime.Intrinsics.X86;
+using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using static LINQ_Demo.ListGenerators;
 namespace LINQ
@@ -295,6 +296,8 @@ namespace LINQ
                 NewPrice = p.UnitPrice * .8m
             }).Where(p => p.Count > 10);
 
+           
+
 
 
           var  ree = from P in ProductList
@@ -358,7 +361,7 @@ namespace LINQ
             Console.WriteLine("====index select=====");
             #region Index Select
             // Indexed Select (Valid Only at Fluent Syntax)
-            var Resulttr = ProductList.Select((P, i) => new { Index = i, ProductName = P.ProductName });
+            var Resulttr = ProductList.Select((P, index) => new { Index = index, ProductName = P.ProductName });
             foreach (var number in Resulttr)
             {
                 Console.WriteLine(number);
@@ -586,7 +589,7 @@ namespace LINQ
             #endregion
 
             Console.WriteLine("union/concat/Intersect/Distinct/Except");
-            #region Set Operators union/concat/Intersect/Distinct/Except
+            #region Set Operators union/concat/Intersect/Distinct/Except  (no quires syntax)
 
             List<int> ints = new List<int>() { 1, 2, 3, 4 };
             List<int> intss = new List<int>() { 1, 2, 3, 4, 5, 6 };
@@ -627,7 +630,176 @@ namespace LINQ
             foreach (var product in zz)
                 Console.WriteLine(product);
             #endregion
+
+            Console.WriteLine("======(Boolean Value)any/all/SequenceEqual=======");
+            #region Quantifiers Operators => Return Boolean Value   (no quires syntax)
+            Console.WriteLine(ProductList.Any());//true
+            //ProductList.Any() >>يعني هل يوجد فيها اي 
+                              //item
+            Console.WriteLine(ProductList.Any(product => product.UnitsInStock == 500));//false
+
+            Console.WriteLine(ProductList.All(product => product.ProductID > 0));
+
+            Console.WriteLine(ints.SequenceEqual(intss));//false
+            /*
+             * any>>هل تحتوي 
+             * all>>هل كل القيم
+             * SequenceEqual>>هل القيم متساوية بين الاثنين
+             * */
             #endregion
+            Console.WriteLine("===========take/skip============");
+            #region Partitioning Operators  (no quires syntax)
+            // Get the first 3 products that are out of stock
+
+            //var result = ProductList.Where(product => product.UnitsInStock == 0).Take(3);
+            //// Get the last 3 products that are out of stock
+            //result = ProductList.Where(product => product.UnitsInStock == 0).TakeLast(3);
+
+            //// Get all but the first 2 products that are out of stock
+            //result = ProductList.Where(product => product.UnitsInStock == 0).Skip(2);
+
+            //// Get all but the last 2 products that are out of stock
+            //result = ProductList.Where(product => product.UnitsInStock == 0).SkipLast(2);
+
+            int[] numberrs = { 5, 4, 1, 3, 9, 8, 6, 7, 2, 0 };
+          
+            var resaa = numberrs.TakeWhile((numbers, index) => numbers > index);
+
+            //5> index 0
+            //4>>index 1
+            //1<<index 2 >>خلص بقف هان
+            //take while>>حيضل يوخد الارقام طول الشرط بتحقق واول مايتحققش بقف ماباخد الرقم
+            foreach (var item in resaa)
+                Console.WriteLine(item);
+
+            #endregion
+
+            Console.WriteLine("======group by=======");
+            #region Grouping Operator
+            //var result = ProductList.Where(product => product.UnitsInStock > 0)
+            //                .GroupBy(product => product.Category)
+            //                .Where(ProductGroup => ProductGroup.Count() > 10)
+            //                .OrderByDescending(ProductGroup => ProductGroup.Count())
+            //                .Select(ProductGroup => new { Category = ProductGroup.Key, Count = ProductGroup.Count() } );
+
+
+            //result = from product in ProductList
+            //         where product.UnitsInStock > 0
+            //         group product by product.Category
+            //         into ProductGroup
+            //         where ProductGroup.Count() > 10
+            //         orderby ProductGroup.Count() descending
+            //         select new { Category = ProductGroup.Key, Count = ProductGroup.Count() };
+
+            //foreach (var group in result)
+            //{
+            //    Console.WriteLine(group.Key);
+            //    foreach (var item in group)
+            //        Console.WriteLine($"=== {item}");
+
+            //    Console.WriteLine("=========================================================");
+            //}
+
+            //foreach ( var group in result )
+            //{
+            //    Console.WriteLine(group);
+            //}
+
+            var bc = ProductList  
+                 .Where(p => p.UnitsInStock > 0)
+                 .GroupBy(p => p.Category);//العناصر الي الهم نفس اسم
+                                           //category
+             //query syntax
+            bc = from p in ProductList
+                 where p.UnitsInStock > 0
+                 group p by p.Category;
+
+            foreach (var item in bc)
+            {
+                 Console.WriteLine(item.Key);//key >> name of Category
+                foreach (var item2 in item)
+                  Console.WriteLine(item2);//item2 >>العناصر الي الهم نفس اسم 
+                                           //Category
+
+                Console.WriteLine("==========");
+            }
+
+            Console.WriteLine("=========");
+
+            var bcc = ProductList
+                      .Where(p => p.UnitsInStock > 0)
+                      .GroupBy(p => p.Category)
+                      .Where(p => p.Count() > 10)//عدد العناصر الي رجعالي الي الهم نفس اسم الكاتجوري اكبر من 10
+                      .OrderByDescending(p => p.Count())//رتبهم من كبير لصغير 
+                      .Select(p => new { category = p.Key, count = p.Count() });// اعرض اسم الكاتجوري وعدد العناصر
+
+            bcc = from p in ProductList
+                  where p.UnitsInStock > 0
+                  group p by p.Category
+                  into p
+                  where p.Count() > 10
+                  orderby p.Count() descending
+                  select new { category = p.Key, count = p.Count() };
+
+            foreach (var item in bcc)
+                Console.WriteLine(item);
+
+            #endregion
+
+            Console.WriteLine("======Let / Into========");
+            #region Let / Into
+            List<string> Namess = new List<string> { "Ahmed", "Ali", "Sally", "Mohamed", "Mohsen" };
+
+            ////var result = from name in Names
+            ////             select Regex.Replace(name, "[aeoiuAEOIU]", String.Empty)
+            ////             into newName
+            ////             where newName.Length >= 3
+            ////             select newName;
+
+            //var result = from name in Names
+            //             let newName = Regex.Replace(name, "[aeoiuAEOIU]", String.Empty)
+            //             where newName.Length >= 3
+            //             select newName;
+
+            //var DiscountProducts = ProductList.Select(P => new
+            //{
+            //    ID = P.ProductID,
+            //    Name = P.ProductName,
+            //    ProductCategory = P.Category,
+            //    Count = P.UnitsInStock,
+            //    NewPrice = P.UnitPrice * .8M
+            //}).Where(P => P.Count > 10);
+
+            //DiscountProducts = from P in ProductList
+            //                   let NewP = new
+            //                   {
+            //                       ID = P.ProductID,
+            //                       Name = P.ProductName,
+            //                       ProductCategory = P.Category,
+            //                       Count = P.UnitsInStock,
+            //                       NewPrice = P.UnitPrice * .8M
+            //                   } 
+            //                   where NewP.Count > 10
+            //                   select NewP;
+
+            //foreach (var name in result)
+            //    Console.WriteLine(name);
+
+            var lh=from nn in  Namess
+                   select Regex.Replace(nn, "[aeoiuAEOIU]", String.Empty)
+                   into Nn
+                   where Nn.Length > 3
+                   select Nn;
+
+            lh=from nn in Namess
+               let name= Regex.Replace(nn, "[aeoiuAEOIU]", String.Empty)
+               where name.Length >= 3
+               select name;
+            foreach (var item in lh)
+                Console.WriteLine(item);
+            #endregion
+
+                   #endregion
         }
     }
 }

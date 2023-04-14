@@ -800,6 +800,23 @@ namespace LINQ
             #endregion
 
                    #endregion
+                 Console.WriteLine("===max by/min by===");
+            #region
+
+            var saa = ProductList.Max(p => p.UnitPrice);
+            Console.WriteLine(saa); //263.5000
+                                    //فقط بجيب السعر
+           
+            var saaz= ProductList.MaxBy(p => p.UnitPrice);
+            Console.WriteLine(saaz);//ProductID:38,ProductName:Côte de Blaye,CategoryBeverages,UnitPrice:263.5000,UnitsInStock:17
+                                   //بجيب كل التفاصيل
+
+            var asa= ProductList.Min(p => p.UnitPrice);
+            Console.WriteLine(asa);//2.5000
+
+            var tt = ProductList.MinBy(p => p.UnitPrice);
+            Console.WriteLine(tt);//ProductID:33,ProductName:Geitost,CategoryDairy Products,UnitPrice:2.5000,UnitsInStock:112
+            #endregion
         }
     }
 }
